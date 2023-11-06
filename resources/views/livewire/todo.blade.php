@@ -99,7 +99,7 @@
             </div>    
             @empty
                 <div class="text-center">
-                    Create your todo :)
+                    No task found
                 </div>
             @endforelse
 
