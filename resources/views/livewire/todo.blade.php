@@ -83,7 +83,7 @@
                             <img src="{{ asset('storage/'.$task->file_name) }}" style="width:300px;" alt="">
                         </a>
                     @endif
-                    <a href="javascript:void(0)" style="float:right;" class="text-danger" wire:click="deleteTask({{ $task->id }})" wire:confirm="Are you sure you want to delete this task?">
+                    <a href="javascript:void(0)" style="float:right;" class="text-danger" wire:click="deleteConfirm({{ $task->id }})">
                         <i class="fa-solid fa-trash"></i>
                     </a>
                     @if(!$task->completed)
@@ -99,7 +99,7 @@
             </div>    
             @empty
                 <div class="text-center">
-                    Create your first todo :)
+                    Create your todo :)
                 </div>
             @endforelse
 
@@ -107,4 +107,38 @@
         </div>
 
     </div>
+    
+    <script>
+        window.addEventListener('swal-success', (event) => {
+            Swal.fire({
+                title: event.detail.title,
+                text: event.detail.text ?? '',
+                icon: 'success'
+            });
+        });
+        
+        window.addEventListener('swal-confirm', (event) => {
+            Swal.fire({
+                title: event.detail.title,
+                text: event.detail.text ?? '',
+                icon: 'warning',
+                showConfirmButton: true,
+                confirmButtonText: 'Yes, Delete it!',
+                showCancelButton: true,
+            }).then(response => {
+                if(response.isConfirmed){
+                    console.log(event.detail.id);
+                    @this.dispatch('deleteTask', [event.detail.id])
+
+                }
+            });
+        });
+
+        // document.addEventListener('livewire:initialized', () => {
+        //     @this.on('post-created', (event) => {
+        //         //
+        //     });
+        // });
+    </script>
 </div>
+

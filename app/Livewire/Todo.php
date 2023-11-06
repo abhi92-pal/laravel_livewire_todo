@@ -13,7 +13,9 @@ use Livewire\WithPagination;
 class Todo extends Component
 {
     use WithPagination, WithFileUploads;
+
     protected $paginationTheme = 'bootstrap';
+    protected $listeners = ['deleteTask'];
 
     // using php annotation
     #[Rule('required|min:3|max:500')]
@@ -52,7 +54,8 @@ class Todo extends Component
 
         $this->resetPage();
 
-        Session::flash('success_message', 'Task created successfully.');
+        // Session::flash('success_message', 'Task created successfully.');
+        $this->dispatch('swal-success', title: 'Task created successfully');
     }
 
     public function updateFormSubmitHandler(){
@@ -68,7 +71,8 @@ class Todo extends Component
         // $this->task_name = '';
         $this->reset(['editTaskId','editTaskName']);
 
-        Session::flash('success_message', 'Task updated successfully.');
+        // Session::flash('success_message', 'Task updated successfully.');
+        $this->dispatch('swal-success', title: 'Task updated successfully');
     }
 
     public function markCompleteIncomplete($id){
@@ -84,12 +88,19 @@ class Todo extends Component
         if($task = Task::find($taskId)){
             $this->editTaskName = $task->task_name;
         }
+
+    }
+
+    public function deleteConfirm($id){
+        
+        $this->dispatch('swal-confirm', title: 'Are you sure?', text: 'You want to delete this task!', id: $id);
     }
 
     public function deleteTask($id){
         Task::where('id', $id)->delete();
         
-        Session::flash('success_message', 'Task deleted successfully.');
+        // Session::flash('success_message', 'Task deleted successfully.');
+        $this->dispatch('swal-success', title: 'Task deleted successfully');
     }
 
     public function render()
